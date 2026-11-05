@@ -1,0 +1,18 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "unnisend",
+  "description": "Plugins internos da UnniSend (SendFlow e UnniChat) para Claude Code.",
+  "owner": {
+    "name": "UnniSend",
+    "email": "israel@sendflow.com.br"
+  },
+  "plugins": [
+    {
+      "name": "manada",
+      "description": "Memória da empresa (porteiro do Manada), agentes da UnniSend e comandos /manada:eu, /manada:teto e /manada:lembrar.",
+      "version": "0.1.0",
+      "source": "./plugins/manada",
+      "category": "productivity"
+    }
+  ]
+}

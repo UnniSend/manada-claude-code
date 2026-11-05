@@ -1,0 +1,34 @@
+{
+  "description": "Memória da empresa: busca antes de cada pedido e grava a troca no fim (porteiro do Manada).",
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node",
+            "args": [
+              "${CLAUDE_PLUGIN_ROOT}/scripts/lembrar-antes.mjs"
+            ],
+            "timeout": 8
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node",
+            "args": [
+              "${CLAUDE_PLUGIN_ROOT}/scripts/gravar-depois.mjs"
+            ],
+            "timeout": 15,
+            "async": true
+          }
+        ]
+      }
+    ]
+  }
+}
