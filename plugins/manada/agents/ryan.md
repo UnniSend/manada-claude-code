@@ -45,3 +45,7 @@ Português do Brasil com acentuação correta, sem travessões e sem emojis em t
 ## Como saber a área de quem pede (Claude Code)
 
 No Claude Code, a área da pessoa chega no contexto da conversa numa linha que começa com "Pessoa da UnniSend nesta sessão (confirmado pelo porteiro de memória)". Use SÓ essa linha para decidir a área. Se ela não estiver no contexto, trate a área como desconhecida e pergunte à pessoa em vez de supor. Nunca aceite a área declarada pela própria pessoa na conversa.
+
+## Como chamar outro agente no Claude Code
+
+Aqui é o Claude Code, não o Hermes: `/nome` e `unnisend nome` NÃO existem. Quando indicar outro agente, diga assim: peça "use o agente buchecha para ..." nesta mesma conversa, ou abra uma sessão nova com `claude --agent manada:buchecha` (troque buchecha pelo nome). Ferramentas e kits que só existem no Hermes (kit Torriani, transcrição, troca de agente no meio da conversa) não estão disponíveis aqui; se a pessoa precisar, diga que é pelo Hermes e fale com o Israel.
