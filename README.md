@@ -52,7 +52,14 @@ Depois feche e abra o Claude Code.
 ## Requisitos
 
 - Claude Code com `ANTHROPIC_BASE_URL=https://omniroute.unnichat.com.br` e `ANTHROPIC_AUTH_TOKEN` com a sua chave pessoal.
-- Node 18 ou mais novo (o mesmo que o Claude Code já usa). Funciona em Mac, Linux e Windows.
+- **Git** instalado. Sem ele o `claude plugin marketplace add` falha com "Command 'git' not found".
+- **Node 18 ou mais novo.** Quem instalou o Claude Code pelo instalador oficial (`install.ps1` / `install.cmd` / `install.sh`) normalmente NÃO tem Node: sem ele o plugin instala, mas a memória e os comandos não funcionam (nenhum erro aparece, só não fazem nada). Confira com `node --version`.
+
+### Windows
+
+- Git: https://git-scm.com/download/win (instalação padrão).
+- Node: https://nodejs.org (versão LTS, instalação padrão). Feche e abra o terminal depois.
+- Testado no Windows 11 com o instalador oficial do Claude Code, Git e Node instalados depois.
 
 Se a chave estiver apontando para outro lugar (Anthropic direto, outro provedor), o plugin não manda nada para lugar nenhum.
 
