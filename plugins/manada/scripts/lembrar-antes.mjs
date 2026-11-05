@@ -37,8 +37,8 @@ async function main() {
     quemSou(3000),
     porteiro("/v1/default/banks/auto/memories/recall", {
       metodo: "POST",
-      corpo: { query: prompt.slice(0, 2000), budget: "low", max_tokens: 1200, types: ["world", "experience", "observation"] },
-      ms: 4000,
+      corpo: { query: prompt.slice(0, 2000), budget: "low", max_tokens: 3000, types: ["world", "experience", "observation"] },
+      ms: 5000,
     }),
   ]);
   const fatos = r.status === 200 && Array.isArray(r.json?.results) ? r.json.results : [];
