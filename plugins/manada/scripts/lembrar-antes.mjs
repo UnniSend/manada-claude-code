@@ -33,14 +33,22 @@ async function main() {
   if (prompt.trim().startsWith("/")) return; // comando do Claude Code não vira memória nem busca
   guardar(`turno-${e.session_id}`, { prompt: prompt.slice(0, 8000), em: Date.now(), contexto: CONTEXTO_RETAIN });
 
-  const [eu, r] = await Promise.all([
-    quemSou(3000),
+  // Duas buscas em paralelo: a frase inteira e só as palavras que importam. A busca do Hindsight às vezes
+  // não traz o fato certo para a frase com "qual é", "só", "sem ferramentas", e traz para as palavras-chave.
+  const busca = (query) =>
     porteiro("/v1/default/banks/auto/memories/recall", {
       metodo: "POST",
-      corpo: { query: prompt.slice(0, 2000), budget: "low", max_tokens: 3000, types: ["world", "experience", "observation"] },
+      corpo: { query, budget: "low", max_tokens: 3000, types: ["world", "experience", "observation"] },
       ms: 5000,
-    }),
+    });
+  const chaves = termos(prompt).slice(0, 12).join(" ");
+  const [eu, r1, r2] = await Promise.all([
+    quemSou(3000),
+    busca(prompt.slice(0, 2000)),
+    chaves && chaves !== norm(prompt).trim() ? busca(chaves) : Promise.resolve({ status: 0 }),
   ]);
+  const lista = (r) => (r.status === 200 && Array.isArray(r.json?.results) ? r.json.results : []);
+  const r = { status: 200, json: { results: [...lista(r1), ...lista(r2)] } };
   const fatos = r.status === 200 && Array.isArray(r.json?.results) ? r.json.results : [];
   const vistos = new Set();
   const linhas = [];
