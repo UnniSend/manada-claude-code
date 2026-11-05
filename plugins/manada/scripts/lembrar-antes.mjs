@@ -6,6 +6,26 @@ import { CONTEXTO_RETAIN, PREAMBULO, chave, guardar, lerEntrada, linhaIdentidade
 
 const MAX_CONTEXTO = 6000;
 
+// O porteiro junta os resultados de vários bancos (área + geral, ou todos para a gestão) e cada banco
+// pontua na própria escala, então a ordem que chega não é confiável. Reordena aqui: palavras do pedido
+// que aparecem no começo do fato pesam mais; a semelhança semântica do Hindsight (0 a 1) desempata.
+const PARADAS = new Set("a o e de da do das dos em no na nos nas um uma para por com sem que qual quais como quem onde quando e so sobre ao aos me te se eu voce isso esse essa este esta the of to and is".split(" "));
+const norm = (s) => String(s || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+const termos = (s) => [...new Set(norm(s).split(/[^a-z0-9-]+/).filter((t) => t.length > 2 && !PARADAS.has(t)))];
+
+export function ordenar(fatos, pedido) {
+  const ts = termos(pedido);
+  const nota = (f) => {
+    // Só o começo do fato conta: fato enorme acertaria qualquer pergunta por acaso.
+    const txt = norm(String(f?.text ?? "").slice(0, 240));
+    const acertos = ts.filter((t) => txt.includes(t)).length;
+    const s = f?.scores ?? {};
+    // keyword do Hindsight não entra: a escala dele varia de banco para banco (0 a 4+) e soterrava o resto.
+    return (ts.length ? acertos / ts.length : 0) * 2 + (s.semantic ?? 0);
+  };
+  return fatos.map((f, i) => ({ f, n: nota(f), i })).sort((a, b) => b.n - a.n || a.i - b.i).map((x) => x.f);
+}
+
 async function main() {
   const e = await lerEntrada();
   const prompt = typeof e.prompt === "string" ? e.prompt : "";
@@ -25,8 +45,9 @@ async function main() {
   const vistos = new Set();
   const linhas = [];
   let total = 0;
-  for (const f of fatos) {
-    const t = String(f?.text ?? "").replace(/\s+/g, " ").trim();
+  for (const f of ordenar(fatos, prompt)) {
+    const bruto = String(f?.text ?? "").replace(/\s+/g, " ").trim();
+    const t = bruto.length > 500 ? bruto.slice(0, 497) + "..." : bruto;
     if (!t || vistos.has(t)) continue;
     vistos.add(t);
     const quando = (f?.mentioned_at || f?.occurred_start || "").slice(0, 10);
