@@ -2,6 +2,7 @@
 name: teto
 description: Mostra quanto falta do seu teto de IA hoje e na semana, e da conta Claude da empresa. Não gasta cota de modelo.
 disable-model-invocation: true
+allowed-tools: Bash(node "${CLAUDE_PLUGIN_ROOT}/scripts/manada.mjs":*)
 ---
 
 ## Resultado

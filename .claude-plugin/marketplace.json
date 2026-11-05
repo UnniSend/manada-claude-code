@@ -10,7 +10,7 @@
     {
       "name": "manada",
       "description": "Memória da empresa (porteiro do Manada), agentes da UnniSend e comandos /manada:eu, /manada:teto e /manada:lembrar.",
-      "version": "0.1.1",
+      "version": "0.1.2",
       "source": "./plugins/manada",
       "category": "productivity"
     }

@@ -1,6 +1,6 @@
 {
   "name": "manada",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Memória da empresa (porteiro do Manada), agentes da UnniSend e comandos de identidade e teto, usando a mesma chave do OmniRoute do Claude Code.",
   "author": {
     "name": "UnniSend"
