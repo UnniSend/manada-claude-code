@@ -1,6 +1,6 @@
 // Biblioteca comum do plugin Manada para Claude Code. Node puro (18+), sem dependências: roda igual
 // em Mac, Linux e Windows. Nada aqui grava chave em disco nem a imprime.
-import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { createHash } from "node:crypto";
@@ -66,6 +66,9 @@ const nomeSeguro = (s) => String(s || "x").replace(/[^a-zA-Z0-9_-]/g, "").slice(
 
 export function guardar(nome, valor) {
   try { writeFileSync(join(pasta(), nomeSeguro(nome) + ".json"), JSON.stringify(valor)); } catch { /* ignora */ }
+}
+export function apagar(nome) {
+  try { rmSync(join(pasta(), nomeSeguro(nome) + ".json"), { force: true }); } catch { /* ignora */ }
 }
 export function ler(nome) {
   try { return JSON.parse(readFileSync(join(pasta(), nomeSeguro(nome) + ".json"), "utf8")); } catch { return null; }

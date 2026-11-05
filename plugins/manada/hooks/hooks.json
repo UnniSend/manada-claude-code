@@ -24,8 +24,7 @@
             "args": [
               "${CLAUDE_PLUGIN_ROOT}/scripts/gravar-depois.mjs"
             ],
-            "timeout": 15,
-            "async": true
+            "timeout": 10
           }
         ]
       }
