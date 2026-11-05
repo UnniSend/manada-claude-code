@@ -1,8 +1,8 @@
 ---
 name: lembrar
-description: Grava um fato na memória da empresa (sua área e a geral). Uso: /manada:lembrar <o que lembrar>
+description: "Grava um fato na memória da empresa (sua área e a geral). Uso: /manada:lembrar <o que lembrar>"
 disable-model-invocation: true
-allowed-tools: Bash(node "${CLAUDE_PLUGIN_ROOT}/scripts/manada.mjs":*)
+allowed-tools: 'Bash(node "${CLAUDE_PLUGIN_ROOT}/scripts/manada.mjs":*)'
 argument-hint: "<o que lembrar>"
 ---
 

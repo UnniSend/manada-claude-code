@@ -1,8 +1,8 @@
 ---
 name: eu
-description: Mostra quem você é para a memória da empresa: nome, área, memória que lê e grava, ferramentas liberadas.
+description: "Mostra quem você é para a memória da empresa: nome, área, memória que lê e grava, ferramentas liberadas."
 disable-model-invocation: true
-allowed-tools: Bash(node "${CLAUDE_PLUGIN_ROOT}/scripts/manada.mjs":*)
+allowed-tools: 'Bash(node "${CLAUDE_PLUGIN_ROOT}/scripts/manada.mjs":*)'
 ---
 
 ## Resultado
