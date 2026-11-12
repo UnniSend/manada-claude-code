@@ -2,6 +2,7 @@
 name: eu
 description: "Mostra quem você é para a memória da empresa: nome, área, memória que lê e grava, ferramentas liberadas."
 disable-model-invocation: true
+model: claude/claude-sonnet-5-5
 allowed-tools: 'Bash(node "${CLAUDE_PLUGIN_ROOT}/scripts/manada.mjs":*)'
 ---
 

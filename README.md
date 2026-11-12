@@ -28,7 +28,7 @@ Rode `/manada:padrao` uma vez e feche e abra o Claude Code. O comando grava no s
 - o modelo padrão passa a ser `claude/claude-sonnet-5-5`;
 - a conversa é comprimida em 200 mil tokens (`CLAUDE_CODE_AUTO_COMPACT_WINDOW`). Sem isso, o Opus deixa a conversa crescer até 1 milhão de tokens e cada resposta fica muito mais cara.
 
-Para usar o Opus numa conversa: `/model claude/claude-opus-5-5`. O `/manada:teto` mostra qual é o seu padrão. O comando não grava nada se o Claude Code não estiver apontado para o OmniRoute da UnniSend, e recusa arquivo `settings.json` que não seja um JSON válido (não estraga o seu).
+Para usar o Opus numa conversa: `/model claude/claude-opus-5-5`. O `/manada:teto` mostra qual é o seu padrão. Os comandos /manada:* usam o Sonnet por conta própria, então funcionam mesmo se o seu padrão atual for um modelo que o OmniRoute recusa. O comando não grava nada se o Claude Code não estiver apontado para o OmniRoute da UnniSend, e recusa arquivo `settings.json` que não seja um JSON válido (não estraga o seu).
 
 ## Desligar a memória numa sessão
 
