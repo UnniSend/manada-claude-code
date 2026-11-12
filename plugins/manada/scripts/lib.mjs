@@ -1,7 +1,7 @@
 // Biblioteca comum do plugin Manada para Claude Code. Node puro (18+), sem dependências: roda igual
 // em Mac, Linux e Windows. Nada aqui grava chave em disco nem a imprime.
 import { mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
-import { tmpdir } from "node:os";
+import { homedir, tmpdir } from "node:os";
 import { join } from "node:path";
 import { createHash } from "node:crypto";
 
@@ -22,6 +22,24 @@ export function chave() {
   if (host !== HOST_OMNI) return null;
   const k = (process.env.ANTHROPIC_AUTH_TOKEN || process.env.ANTHROPIC_API_KEY || "").trim();
   return k || null;
+}
+
+/** O Claude Code está apontado para o OmniRoute da UnniSend? (só olha o endereço, não a chave) */
+export function baseEhOmni() {
+  try { return new URL(process.env.ANTHROPIC_BASE_URL || "").host === HOST_OMNI; } catch { return false; }
+}
+
+/** settings.json do USUÁRIO do Claude Code. Respeita CLAUDE_CONFIG_DIR; no Windows homedir() vira C:\\Users\\nome. */
+export const arquivoSettings = () => join(process.env.CLAUDE_CONFIG_DIR || join(homedir(), ".claude"), "settings.json");
+
+/** Lê o settings.json do usuário. {ok:true, dados} (arquivo ausente = {}) ou {ok:false} se existe e não é JSON. */
+export function lerSettings() {
+  let txt;
+  try { txt = readFileSync(arquivoSettings(), "utf8"); } catch (e) { return e.code === "ENOENT" ? { ok: true, dados: {} } : { ok: false }; }
+  try {
+    const dados = JSON.parse(txt.replace(/^\uFEFF/, "") || "{}");
+    return dados && typeof dados === "object" && !Array.isArray(dados) ? { ok: true, dados } : { ok: false };
+  } catch { return { ok: false }; }
 }
 
 /** Memória desligada nesta sessão: MANADA_MEMORIA=off (ou 0/nao/false) antes de abrir o claude. */

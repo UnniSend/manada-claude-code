@@ -1,7 +1,9 @@
 #!/usr/bin/env node
-// Comandos do plugin: node manada.mjs eu | teto | lembrar <texto>
+// Comandos do plugin: node manada.mjs eu | teto | lembrar <texto> | padrao
 // Saem em texto simples, prontos para o Claude mostrar. Não imprimem a chave.
-import { OMNIROUTE, chave, porteiro, quemSou } from "./lib.mjs";
+import { mkdirSync, renameSync, writeFileSync } from "node:fs";
+import { dirname } from "node:path";
+import { OMNIROUTE, arquivoSettings, baseEhOmni, chave, lerSettings, porteiro, quemSou } from "./lib.mjs";
 
 const [, , cmd, ...resto] = process.argv;
 
@@ -77,8 +79,41 @@ async function teto() {
     linhas.push("", "Conta Claude da empresa que você usa (compartilhada com o time)");
     for (const [k, q] of janelas) linhas.push(`  ${rot[k]}: restam ${q.remainingPercentage ?? q.remaining}%, ${faltam(q.resetAt)}`);
   }
+  linhas.push("", linhaModelo());
   linhas.push("", "Quando o seu teto acaba, a IA para até renovar. Se a conta da empresa acabar, o OmniRoute passa sozinho para a próxima conta.");
   return linhas.join("\n");
+}
+
+const MODELO_PADRAO = "claude/claude-sonnet-5-5";
+const JANELA = "200000";
+
+/** Linha do /manada:teto com o padrão gravado no settings.json do usuário (só leitura, não gasta token). */
+function linhaModelo() {
+  const r = lerSettings();
+  if (!r.ok) return "Modelo padrão: não consegui ler o settings.json do Claude Code.";
+  const m = r.dados.model;
+  const j = r.dados.env?.CLAUDE_CODE_AUTO_COMPACT_WINDOW;
+  if (m === MODELO_PADRAO && String(j) === JANELA) return `Modelo padrão: ${m}, conversa comprimida em ${Number(j) / 1000} mil.`;
+  return `Modelo padrão: ${m ?? "não definido"}${j ? `, compressão em ${j}` : ""}. Rode /manada:padrao para usar Sonnet com compressão em 200 mil.`;
+}
+
+/** /manada:padrao: grava Sonnet + compressão em 200 mil no settings.json do usuário, preservando o resto. */
+function padrao() {
+  if (!baseEhOmni()) return "Não mudei nada: este Claude Code não está apontado para o OmniRoute da UnniSend (ANTHROPIC_BASE_URL). O padrão só vale para quem usa o OmniRoute.";
+  const r = lerSettings();
+  if (!r.ok) return `Não mudei nada: não consegui ler ${arquivoSettings()} (ele existe, mas não é um JSON válido). Corrija ou apague esse arquivo e rode de novo.`;
+  const antes = r.dados.model;
+  const novo = { ...r.dados, model: MODELO_PADRAO, env: { ...(r.dados.env && typeof r.dados.env === "object" ? r.dados.env : {}), CLAUDE_CODE_AUTO_COMPACT_WINDOW: JANELA } };
+  const arq = arquivoSettings();
+  try {
+    mkdirSync(dirname(arq), { recursive: true });
+    const tmp = `${arq}.manada-${process.pid}.tmp`;
+    writeFileSync(tmp, JSON.stringify(novo, null, 2) + "\n");
+    renameSync(tmp, arq);
+  } catch (e) {
+    return `Não consegui gravar ${arq} (${e.code ?? "erro"}). Nada foi mudado.`;
+  }
+  return `Pronto: Sonnet como padrão e conversa comprimida em 200 mil. Feche e abra o Claude Code. Para usar o Opus numa conversa: /model claude/claude-opus-5-5.${antes && antes !== MODELO_PADRAO ? ` (O padrão anterior era ${antes}.)` : ""}`;
 }
 
 async function lembrar(texto) {
@@ -97,5 +132,5 @@ async function lembrar(texto) {
   return `Anotado na memória da empresa${eu?.area ? ` (área ${eu.area} e geral)` : ""}. Leva até 1 minuto para aparecer nas buscas.`;
 }
 
-const saida = cmd === "eu" ? await eu() : cmd === "teto" ? await teto() : cmd === "lembrar" ? await lembrar(resto.join(" ")) : "Comando desconhecido. Use eu, teto ou lembrar.";
+const saida = cmd === "eu" ? await eu() : cmd === "teto" ? await teto() : cmd === "lembrar" ? await lembrar(resto.join(" ")) : cmd === "padrao" ? padrao() : "Comando desconhecido. Use eu, teto, lembrar ou padrao.";
 process.stdout.write(saida + "\n");

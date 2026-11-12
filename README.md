@@ -19,6 +19,16 @@ Depois feche e abra o Claude Code. Para conferir, rode `/manada:eu`.
   - `/manada:eu` quem você é para a memória: nome, área, o que lê e onde grava.
   - `/manada:teto` quanto falta do seu teto de IA hoje e na semana, e da conta Claude da empresa. Não gasta cota.
   - `/manada:lembrar <texto>` grava um fato na memória da empresa na hora.
+  - `/manada:padrao` deixa o Sonnet como modelo padrão do seu Claude Code (veja "Padrão Sonnet" abaixo).
+
+## Padrão Sonnet
+
+Rode `/manada:padrao` uma vez e feche e abra o Claude Code. O comando grava no seu `settings.json` do Claude Code (`~/.claude/settings.json`; no Windows, `C:\Users\seu-nome\.claude\settings.json`), sem apagar o que já está lá:
+
+- o modelo padrão passa a ser `claude/claude-sonnet-5-5`;
+- a conversa é comprimida em 200 mil tokens (`CLAUDE_CODE_AUTO_COMPACT_WINDOW`). Sem isso, o Opus deixa a conversa crescer até 1 milhão de tokens e cada resposta fica muito mais cara.
+
+Para usar o Opus numa conversa: `/model claude/claude-opus-5-5`. O `/manada:teto` mostra qual é o seu padrão. O comando não grava nada se o Claude Code não estiver apontado para o OmniRoute da UnniSend, e recusa arquivo `settings.json` que não seja um JSON válido (não estraga o seu).
 
 ## Desligar a memória numa sessão
 
